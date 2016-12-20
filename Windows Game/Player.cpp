@@ -41,6 +41,17 @@ void Player::start()
 
 void Player::update(float dt)
 {
+	window.getSize();
+	sf::IntRect windowRect{ window.getPosition().x, window.getPosition().y,static_cast<int>(window.getSize().x),static_cast<int>(window.getSize().y) };
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && windowRect.contains(sf::Mouse::getPosition()))
+	{
+		isDragged = true;
+		dragOffset = sf::Vector2i(-windowRect.left + sf::Mouse::getPosition().x, -windowRect.top + sf::Mouse::getPosition().y);
+	}
+	else if(!sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		isDragged = false;
+	}
 	sf::Vector2i tempSize = sf::Vector2i(static_cast<int>(window.getSize().x), static_cast<int>(window.getSize().y));
 	std::tuple<bool, sf::Vector2i> groundCollision = Desktop::collides(sf::IntRect{ static_cast<int>(position.x >= 0 ? position.x + 0.5 : position.x - 0.5),static_cast<int>(position.y >= 0 ? position.y + 0.5 : position.y - 0.5) + 1,tempSize.x,tempSize.y }, sf::Vector2f(0, 1));
 	if (std::get<bool>(groundCollision))
@@ -206,7 +217,16 @@ void Player::update(float dt)
 				changeAnimation("jump_left");
 		}
 	}
-	window.setPosition(sf::Vector2i(static_cast<int>(position.x + 0.5), static_cast<int>(position.y + 0.5)));
+	if (!isDragged)
+		window.setPosition(sf::Vector2i(static_cast<int>(position.x + 0.5), static_cast<int>(position.y + 0.5)));
+	else
+	{
+		window.setPosition(sf::Mouse::getPosition() - dragOffset);
+		position = sf::Vector2f(sf::Mouse::getPosition().x - dragOffset.x, sf::Mouse::getPosition().y - dragOffset.y);
+		velocity.x = 0;
+		velocity.y = 0;
+		changeAnimation("idle");
+	}
 	::SetWindowPos(window.getSystemHandle(), HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOSIZE | SWP_NOMOVE);
 	sf::Event e;
 	while (window.pollEvent(e))

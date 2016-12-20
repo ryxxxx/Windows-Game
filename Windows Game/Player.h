@@ -35,6 +35,8 @@ private:
 	bool stoppedJumping = true;
 	bool grounded = false;
 	bool jumpKeyWasDown = false;
+	bool isDragged = false;
+	sf::Vector2i dragOffset;
 	sf::Vector2f position;
 	sf::Vector2f velocity;
 };
