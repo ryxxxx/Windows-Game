@@ -67,7 +67,7 @@ void Player::update(float dt)
 	if (grounded)
 	{
 		//move left
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		if (sf::Keyboard::isKeyPressed(leftKey))
 		{
 			if (velocity.x > 0.f)
 				velocity.x = velocity.x - friction*dt - verticalAcceleration*dt;
@@ -77,7 +77,7 @@ void Player::update(float dt)
 				velocity.x = -maxVerticalVelocity;
 		}
 		//move right
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		else if (sf::Keyboard::isKeyPressed(rightKey))
 		{
 			if (velocity.x < 0.f)
 				velocity.x = velocity.x + friction*dt + verticalAcceleration*dt;
@@ -102,7 +102,7 @@ void Player::update(float dt)
 	else
 	{
 		//move left
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		if (sf::Keyboard::isKeyPressed(leftKey))
 		{
 			if (velocity.x > -maxVerticalVelocity)
 				velocity.x = velocity.x - verticalAcceleration*dt / 2;
@@ -110,7 +110,7 @@ void Player::update(float dt)
 				velocity.x = -maxVerticalVelocity;
 		}
 		//move right
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		else if (sf::Keyboard::isKeyPressed(rightKey))
 		{
 			if (velocity.x < maxVerticalVelocity)
 				velocity.x = velocity.x + verticalAcceleration*dt / 2;
@@ -125,7 +125,7 @@ void Player::update(float dt)
 	}
 	//jump
 	timeSinceJumpStarted += dt;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	if (sf::Keyboard::isKeyPressed(upKey))
 	{
 		if (atWall && !jumpKeyWasDown)
 		{

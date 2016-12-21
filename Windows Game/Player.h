@@ -29,6 +29,9 @@ private:
 	const float colliderUpdate = 0.f;//go up for less processing power use
 	const float timeForJumpAcceleration = 0.18f;
 	const float wallJumpSpeed = 300.f;
+	const sf::Keyboard::Key leftKey = sf::Keyboard::A;
+	const sf::Keyboard::Key rightKey = sf::Keyboard::D;
+	const sf::Keyboard::Key upKey = sf::Keyboard::W;
 	float timeSinceLastJump = 0.3f;
 	float timeSinceLastColliderUpdate = 0.f;
 	float timeSinceJumpStarted = 0.f;
