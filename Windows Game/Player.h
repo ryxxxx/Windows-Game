@@ -39,6 +39,7 @@ private:
 	bool grounded = false;
 	bool jumpKeyWasDown = false;
 	bool isDragged = false;
+	bool mouseWasPressed = false;
 	sf::Vector2i dragOffset;
 	sf::Vector2f position;
 	sf::Vector2f velocity;

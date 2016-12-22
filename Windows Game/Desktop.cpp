@@ -138,8 +138,32 @@ void Desktop::update()
 {
 	windowColliders->clear();
 	EnumWindows(EnumWindowsProc, NULL);
+	CollisionLine rightDesktopSide, leftDesktopSide, bottomDesktopSide, topDesktopSide;
+	rightDesktopSide.blockedFromTopLeft = true;
+	rightDesktopSide.blockedFromDownRight = false;
+	rightDesktopSide.length = sf::VideoMode::getDesktopMode().height;
+	rightDesktopSide.startPoint = sf::Vector2i(sf::VideoMode::getDesktopMode().width, 0);
+	rightDesktopSide.vertical = false;
+	leftDesktopSide.blockedFromTopLeft = false;
+	leftDesktopSide.blockedFromDownRight = true;
+	leftDesktopSide.length = sf::VideoMode::getDesktopMode().height;
+	leftDesktopSide.startPoint = sf::Vector2i(0, 0);
+	leftDesktopSide.vertical = false;
+	bottomDesktopSide.blockedFromTopLeft = true;
+	bottomDesktopSide.blockedFromDownRight = false;
+	bottomDesktopSide.length = sf::VideoMode::getDesktopMode().width;
+	bottomDesktopSide.startPoint = sf::Vector2i(0, sf::VideoMode::getDesktopMode().height);
+	bottomDesktopSide.vertical = true;
+	topDesktopSide.blockedFromTopLeft = false;
+	topDesktopSide.blockedFromDownRight = true;
+	topDesktopSide.length = sf::VideoMode::getDesktopMode().width;
+	topDesktopSide.startPoint = sf::Vector2i(0, 0);
+	topDesktopSide.vertical = true;
+	windowColliders->push_back(rightDesktopSide);
+	windowColliders->push_back(leftDesktopSide);
+	windowColliders->push_back(bottomDesktopSide);
+	windowColliders->push_back(topDesktopSide);
 }
-
 
 std::tuple<bool, sf::Vector2i> Desktop::collides(sf::IntRect box, sf::Vector2f velocity)
 {
