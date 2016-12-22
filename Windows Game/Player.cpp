@@ -66,8 +66,16 @@ void Player::update(float dt)
 	std::tuple<bool, sf::Vector2i> atWallRight = Desktop::collides(sf::IntRect{ static_cast<int>(position.x >= 0 ? position.x + 0.5 : position.x - 0.5) + 1,static_cast<int>(position.y >= 0 ? position.y + 0.5 : position.y - 0.5),tempSize.x,tempSize.y }, sf::Vector2f(1, 0));
 	std::tuple<bool, sf::Vector2i> atWallLeft = Desktop::collides(sf::IntRect{ static_cast<int>(position.x >= 0 ? position.x + 0.5 : position.x - 0.5) - 1,static_cast<int>(position.y >= 0 ? position.y + 0.5 : position.y - 0.5),tempSize.x,tempSize.y }, sf::Vector2f(-1, 0));
 	bool atWall = false;
-	if (std::get<bool>(atWallRight) || std::get<bool>(atWallLeft))
+	if (std::get<bool>(atWallRight))
+	{
 		atWall = true;
+		timeSinceRightWall = 0;
+	}
+	if (std::get<bool>(atWallLeft))
+	{
+		atWall = true;
+		timeSinceLeftWall = 0;
+	}
 	//movement on ground
 	if (grounded)
 	{
@@ -130,18 +138,22 @@ void Player::update(float dt)
 	}
 	//jump
 	timeSinceJumpStarted += dt;
+	timeSinceLeftWall += dt;
+	timeSinceRightWall += dt;
 	if (sf::Keyboard::isKeyPressed(upKey))
 	{
-		if (atWall && !jumpKeyWasDown)
+		if ((timeSinceLeftWall < stickyWall || timeSinceRightWall < stickyWall || atWall) && !jumpKeyWasDown)
 		{
 			timeSinceLastJump = 0;
 			timeSinceJumpStarted = 0;
 			velocity.y = -jumpPower*0.8f;
 			stoppedJumping = false;
-			if (std::get<bool>(atWallLeft))
+			if (std::get<bool>(atWallLeft) || (timeSinceLeftWall > 0 && timeSinceLeftWall < stickyWall))
 				velocity.x = wallJumpSpeed;
 			else
 				velocity.x = -wallJumpSpeed;
+			timeSinceLeftWall = 0;
+			timeSinceRightWall = 0;
 		}
 		else if (grounded && timeSinceLastJump>jumpCoolDown)
 		{

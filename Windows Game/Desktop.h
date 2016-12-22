@@ -23,7 +23,7 @@ private:
 		std::tuple<bool, sf::Vector2i> collides(sf::IntRect box, sf::Vector2f velocity);
 	};
 
-	static std::shared_ptr<std::vector<CollisionLine>> windowColliders;
+	static std::shared_ptr<std::vector<std::tuple<HWND, CollisionLine>>> windowColliders;
 	static BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lparam);
 	static std::vector<HWND> windowsToIgnore;
 };

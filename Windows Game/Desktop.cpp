@@ -1,7 +1,7 @@
 #include "Desktop.h"
 #include <iostream>
 
-std::shared_ptr<std::vector<Desktop::CollisionLine>> Desktop::windowColliders = std::make_shared<std::vector<Desktop::CollisionLine>>();
+std::shared_ptr<std::vector<std::tuple<HWND ,Desktop::CollisionLine>>> Desktop::windowColliders = std::make_shared<std::vector<std::tuple<HWND, Desktop::CollisionLine>>>();
 std::vector<HWND> Desktop::windowsToIgnore = std::vector<HWND>();
 
 std::tuple<bool, sf::Vector2i> Desktop::CollisionLine::collides(sf::IntRect box, sf::Vector2f velocity)
@@ -112,7 +112,7 @@ BOOL CALLBACK Desktop::EnumWindowsProc(HWND hwnd, LPARAM lParam)
 	tempCollider1.vertical = true;
 	tempCollider1.startPoint = sf::Vector2i{ static_cast<int>(rect->left + 7), static_cast<int>(rect->top) };
 	tempCollider1.length = static_cast<int>((rect->right - 7) - (rect->left + 7));
-	Desktop::windowColliders->push_back(tempCollider1);
+	Desktop::windowColliders->push_back(std::tuple<HWND, Desktop::CollisionLine>(hwnd, tempCollider1));
 	//lineCollider für linke seite des fensters
 	CollisionLine tempCollider2;
 	tempCollider2.blockedFromTopLeft = true;
@@ -120,7 +120,7 @@ BOOL CALLBACK Desktop::EnumWindowsProc(HWND hwnd, LPARAM lParam)
 	tempCollider2.vertical = false;
 	tempCollider2.startPoint = sf::Vector2i{ static_cast<int>(rect->left+7), static_cast<int>(rect->top) };
 	tempCollider2.length = static_cast<int>((rect->bottom - 7) - rect->top);
-	Desktop::windowColliders->push_back(tempCollider2);
+	Desktop::windowColliders->push_back(std::tuple<HWND, Desktop::CollisionLine>(hwnd, tempCollider2));
 	//lineCollider für rechte seite des fensters
 	CollisionLine tempCollider3;
 	tempCollider3.blockedFromTopLeft = false;
@@ -128,7 +128,7 @@ BOOL CALLBACK Desktop::EnumWindowsProc(HWND hwnd, LPARAM lParam)
 	tempCollider3.vertical = false;
 	tempCollider3.startPoint = sf::Vector2i{ static_cast<int>(rect->right-7), static_cast<int>(rect->top) };
 	tempCollider3.length = static_cast<int>((rect->bottom - 7) - rect->top);
-	Desktop::windowColliders->push_back(tempCollider3);
+	Desktop::windowColliders->push_back(std::tuple<HWND, Desktop::CollisionLine>(hwnd, tempCollider3));
 	DeleteObject(rect);
 	delete rect;
 	return TRUE;
@@ -142,34 +142,35 @@ void Desktop::update()
 	rightDesktopSide.blockedFromTopLeft = true;
 	rightDesktopSide.blockedFromDownRight = false;
 	rightDesktopSide.length = sf::VideoMode::getDesktopMode().height;
-	rightDesktopSide.startPoint = sf::Vector2i(sf::VideoMode::getDesktopMode().width, 0);
+	rightDesktopSide.startPoint = sf::Vector2i(sf::VideoMode::getDesktopMode().width - 1, 0);
 	rightDesktopSide.vertical = false;
 	leftDesktopSide.blockedFromTopLeft = false;
 	leftDesktopSide.blockedFromDownRight = true;
 	leftDesktopSide.length = sf::VideoMode::getDesktopMode().height;
-	leftDesktopSide.startPoint = sf::Vector2i(0, 0);
+	leftDesktopSide.startPoint = sf::Vector2i(1, 0);
 	leftDesktopSide.vertical = false;
 	bottomDesktopSide.blockedFromTopLeft = true;
 	bottomDesktopSide.blockedFromDownRight = false;
 	bottomDesktopSide.length = sf::VideoMode::getDesktopMode().width;
-	bottomDesktopSide.startPoint = sf::Vector2i(0, sf::VideoMode::getDesktopMode().height);
+	bottomDesktopSide.startPoint = sf::Vector2i(0, sf::VideoMode::getDesktopMode().height - 1);
 	bottomDesktopSide.vertical = true;
 	topDesktopSide.blockedFromTopLeft = false;
 	topDesktopSide.blockedFromDownRight = true;
 	topDesktopSide.length = sf::VideoMode::getDesktopMode().width;
-	topDesktopSide.startPoint = sf::Vector2i(0, 0);
+	topDesktopSide.startPoint = sf::Vector2i(0, 1);
 	topDesktopSide.vertical = true;
-	windowColliders->push_back(rightDesktopSide);
-	windowColliders->push_back(leftDesktopSide);
-	windowColliders->push_back(bottomDesktopSide);
-	windowColliders->push_back(topDesktopSide);
+	windowColliders->push_back(std::tuple<HWND, Desktop::CollisionLine>(nullptr, rightDesktopSide));
+	windowColliders->push_back(std::tuple<HWND, Desktop::CollisionLine>(nullptr, leftDesktopSide));
+	windowColliders->push_back(std::tuple<HWND, Desktop::CollisionLine>(nullptr, bottomDesktopSide));
+	windowColliders->push_back(std::tuple<HWND, Desktop::CollisionLine>(nullptr, topDesktopSide));
 }
 
 std::tuple<bool, sf::Vector2i> Desktop::collides(sf::IntRect box, sf::Vector2f velocity)
 {
 	for (size_t i = 0; i < windowColliders->size(); i++)
 	{
-		std::tuple<bool, sf::Vector2i> collisionInfo = (*windowColliders)[i].collides(box, velocity);
+		std::tuple<bool, sf::Vector2i> collisionInfo = std::get<CollisionLine>((*windowColliders)[i]).collides(box, velocity);
+		HWND hwnd = std::get<HWND>((*windowColliders)[i]);
 		if (std::get<bool>(collisionInfo))
 		{
 			return collisionInfo;
