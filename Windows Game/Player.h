@@ -16,7 +16,6 @@ private:
 
 	std::string currentAnimationTitle;
 	bool done;
-	sf::RenderWindow window;
 	const float verticalAcceleration = 1300.f;
 	const float maxVerticalVelocity = 600.f;
 	const float friction = 2700.f;

@@ -12,6 +12,4 @@ public:
 protected:
 	sf::RenderWindow window;
 	std::map<std::string, std::shared_ptr<Animation>> animations;
-
-	virtual void run() {};
 };

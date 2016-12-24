@@ -21,7 +21,7 @@ Player::Player()
 void Player::start()
 {
 	done = false;
-	window.create(sf::VideoMode(0, 0), "", sf::Style::None);
+	window.create(sf::VideoMode(0, 0), "Player", sf::Style::None);
 	window.setFramerateLimit(60);
 	Desktop::ignoreWindow(&window);
 	position = sf::Vector2f(window.getPosition().x, window.getPosition().y);
@@ -41,6 +41,13 @@ void Player::start()
 
 void Player::update(float dt)
 {
+	if (position.y > sf::VideoMode::getDesktopMode().height || position.y < 0)
+	{
+		position.x = sf::VideoMode::getDesktopMode().width / 2;
+		position.y = sf::VideoMode::getDesktopMode().height / 2;
+		velocity.x = 0.f;
+		velocity.y = -700.f;
+	}
 	window.getSize();
 	sf::IntRect windowRect{ window.getPosition().x, window.getPosition().y,static_cast<int>(window.getSize().x),static_cast<int>(window.getSize().y) };
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && windowRect.contains(sf::Mouse::getPosition()) && !mouseWasPressed)

@@ -9,6 +9,16 @@ int main()
 }
 #endif
 
+#ifdef MENU
+#include "Menu.h"
+int main()
+{
+	Menu menu;
+	return 0;
+}
+#endif
+
+
 #ifdef FILE_TEST
 #include <fstream>
 #include <iostream>
