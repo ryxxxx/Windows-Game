@@ -3,7 +3,7 @@
 #include <iostream>
 
 //Start executables
-VOID startup(LPCTSTR lpApplicationName, LPSTR lpCommandLine = NULL)
+VOID startup(LPCTSTR lpApplicationName)
 {
 	// additional information
 	STARTUPINFO si;
@@ -16,7 +16,7 @@ VOID startup(LPCTSTR lpApplicationName, LPSTR lpCommandLine = NULL)
 
 	// start the program up
 	CreateProcess(lpApplicationName,   // the path
-		lpCommandLine,        // Command line
+		NULL,        // Command line
 		NULL,           // Process handle not inheritable
 		NULL,           // Thread handle not inheritable
 		FALSE,          // Set handle inheritance to FALSE
@@ -76,17 +76,26 @@ void Menu::update(float deltaTime)
 	{
 		mouseReleased = false;
 	}
+
 	if (playButtonCollider.contains(mousePosition) && !dragging)
 	{
 		currentAnimationTitle = "hover_play";
 		if (mouseReleased)
-			std::cout << "play";
+		{
+			std::string currentLevel = "Player";
+			std::string directory = "..\\" + currentLevel + "\\" + currentLevel + ".exe";
+			startup(directory.c_str());
+			window.close();
+			done = true;
+		}
 	}
 	else if (settingsButtonCollider.contains(mousePosition) && !dragging)
 	{
 		currentAnimationTitle = "hover_settings";
 		if (mouseReleased)
-			ShellExecute(NULL, "open", "options.txt", NULL, NULL, SW_SHOW);
+		{
+			ShellExecute(NULL, "open", "..\\options.txt", NULL, NULL, SW_SHOW);
+		}
 	}
 	else if (exitButtonCollider.contains(mousePosition) && !dragging)
 	{
@@ -111,7 +120,7 @@ void Menu::update(float deltaTime)
 			{
 				window.setPosition(sf::Mouse::getPosition() - grabOffset);
 			}
-			else
+			else if(!wasPressed && !sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
 				dragging = false;
 			}
