@@ -184,7 +184,7 @@ void Player::update(float dt)
 	timeSinceLastColliderUpdate += dt;
 	if (timeSinceLastColliderUpdate > colliderUpdate)
 	{
-		Desktop::update();
+		Desktop::update_colliders();
 		timeSinceLastColliderUpdate = 0.f;
 	}
 	sf::Vector2f tempPos{ position.x + velocity.x*dt, position.y };

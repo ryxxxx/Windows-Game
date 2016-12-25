@@ -1,6 +1,8 @@
 #include "Menu.h"
 #ifdef MENU
 #include <iostream>
+#include <fstream>
+#include <algorithm>
 
 //Start executables
 VOID startup(LPCTSTR lpApplicationName)
@@ -82,8 +84,10 @@ void Menu::update(float deltaTime)
 		currentAnimationTitle = "hover_play";
 		if (mouseReleased)
 		{
-			std::string currentLevel = "Player";
+			Desktop::update_options();
+			std::string currentLevel = Desktop::options["currentLevel"];
 			std::string directory = "..\\" + currentLevel + "\\" + currentLevel + ".exe";
+			std::cout << directory;
 			startup(directory.c_str());
 			window.close();
 			done = true;

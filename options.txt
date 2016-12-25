@@ -1,1 +1,2 @@
-player = kill
+#what level is currently playing?
+currentLevel = Player

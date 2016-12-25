@@ -3,6 +3,9 @@
 #include <SFML\Graphics.hpp>
 #include <Windows.h>
 #include <memory>
+#include <algorithm>
+#include <map>
+#include <fstream>
 
 class Desktop
 {
@@ -10,9 +13,11 @@ public:
 	Desktop() {};
 	virtual ~Desktop() {};
 
-	static void update();
+	static void update_colliders();
+	static void update_options();
 	static std::tuple<bool, sf::Vector2i> collides(sf::IntRect, sf::Vector2f);
 	static void ignoreWindow(sf::RenderWindow*);
+	static std::map<std::string, std::string> options;
 private:
 	struct CollisionLine
 	{

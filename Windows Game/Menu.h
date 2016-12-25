@@ -2,6 +2,7 @@
 #include "ProgramDefinition.h"
 #ifdef MENU
 #include "WLEntity.h"
+#include "Desktop.h"
 
 class Menu : public WLEntity
 {

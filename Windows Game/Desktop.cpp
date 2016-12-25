@@ -3,6 +3,7 @@
 
 std::shared_ptr<std::vector<std::tuple<HWND ,Desktop::CollisionLine>>> Desktop::windowColliders = std::make_shared<std::vector<std::tuple<HWND, Desktop::CollisionLine>>>();
 std::vector<HWND> Desktop::windowsToIgnore = std::vector<HWND>();
+std::map<std::string, std::string> Desktop::options = std::map<std::string, std::string>();
 
 std::tuple<bool, sf::Vector2i> Desktop::CollisionLine::collides(sf::IntRect box, sf::Vector2f velocity)
 {
@@ -134,7 +135,7 @@ BOOL CALLBACK Desktop::EnumWindowsProc(HWND hwnd, LPARAM lParam)
 	return TRUE;
 }
 
-void Desktop::update()
+void Desktop::update_colliders()
 {
 	windowColliders->clear();
 	EnumWindows(EnumWindowsProc, NULL);
@@ -163,6 +164,27 @@ void Desktop::update()
 	windowColliders->push_back(std::tuple<HWND, Desktop::CollisionLine>(nullptr, leftDesktopSide));
 	windowColliders->push_back(std::tuple<HWND, Desktop::CollisionLine>(nullptr, bottomDesktopSide));
 	windowColliders->push_back(std::tuple<HWND, Desktop::CollisionLine>(nullptr, topDesktopSide));
+}
+
+void Desktop::update_options()
+{
+	options.clear();
+	std::ifstream optionsFile{ "..\\options.txt" };
+	std::string line;
+	while (!optionsFile.eof())
+	{
+		std::getline(optionsFile, line);
+		line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
+		if (line[0] == '#')
+			continue;
+		for (int i = 0; i < line.length(); i++)
+		{
+			if (line[i] == '=')
+			{
+				options[line.substr(0, i)] = line.substr(i + 1, line.length());
+			}
+		}
+	}
 }
 
 std::tuple<bool, sf::Vector2i> Desktop::collides(sf::IntRect box, sf::Vector2f velocity)
